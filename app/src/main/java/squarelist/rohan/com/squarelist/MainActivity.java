@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private Bundle checkedBundle(){
+        Bundle b = new Bundle();
 
         return null;
     }
