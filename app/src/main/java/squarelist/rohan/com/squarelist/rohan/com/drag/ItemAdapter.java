@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 
+import squarelist.rohan.com.squarelist.ItemActionListener;
+
 /**
  * Created by Rohan on 11/2/2015.
  */
@@ -48,7 +50,8 @@ public class ItemAdapter extends SimpleCursorAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = super.getView(position, convertView, parent);
-        v.setTag(position);
+        long itemId = getItemId(position);
+        v.setTag(itemId); // position
         v.setOnTouchListener(new ItemTouchListener());
 
 

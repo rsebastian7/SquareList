@@ -18,6 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:authorities="squarelist.rohan.com.provider"
+            android:name="squarelist.rohan.com.database.DataProvider"
+
+            />
     </application>
 
 </manifest>

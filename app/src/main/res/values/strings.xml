@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">SquareList</string>
     <string name="action_settings">Settings</string>
+    <string name="item_name">Item Name</string>
+    <string name="item_status">Item Status</string>
+    <string name="item_checked">Checked</string>
+    <string name="item_unchecked">Unchecked</string>
 </resources>

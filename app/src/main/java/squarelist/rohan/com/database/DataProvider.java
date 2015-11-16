@@ -24,7 +24,6 @@ public class DataProvider extends ContentProvider {
     static {
         sUriMatcher.addURI(AUTHORITY, ItemContract.ItemEntry.ITEM_TABLE, ITEMS_TABLE);
         sUriMatcher.addURI(AUTHORITY, ItemContract.ItemEntry.ITEM_TABLE + SEPARATOR + "#", ITEM_ID);
-
     }
 
     private static final String TAG = DataProvider.class.getSimpleName();
@@ -41,7 +40,7 @@ public class DataProvider extends ContentProvider {
             case ITEMS_TABLE:
                 return ItemContract.ItemEntry.ITEM_TABLE;
             case ITEM_ID:
-                return null;
+                return ItemContract.ItemEntry.ITEM_TABLE;
             default:
                 return null;
         }
@@ -51,16 +50,12 @@ public class DataProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder, CancellationSignal cancellationSignal) {
         return DatabaseHelper.getInstance(getContext()).getWritableDatabase().query(fetchTableName(uri), projection, selection, selectionArgs, null, null, sortOrder);
-
-        //return super.query(uri, projection, selection, selectionArgs, sortOrder, cancellationSignal);
     }
 
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         return DatabaseHelper.getInstance(getContext()).getWritableDatabase().query(fetchTableName(uri), projection, selection, selectionArgs, null, null, sortOrder);
-
-        //return null;
     }
 
     @Nullable
