@@ -62,8 +62,9 @@ public class DataProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         long id = DatabaseHelper.getInstance(getContext()).getWritableDatabase().insert(fetchTableName(uri), null, values);
-
-        return null;
+        Uri.Builder builder = uri.buildUpon();
+        builder.appendPath(Long.toString(id));
+        return builder.build();
     }
 
     @Override

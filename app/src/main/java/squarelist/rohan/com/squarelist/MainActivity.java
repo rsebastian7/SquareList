@@ -1,29 +1,32 @@
 package squarelist.rohan.com.squarelist;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.ClipData;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 
 import squarelist.rohan.com.database.DataProvider;
-import squarelist.rohan.com.database.DatabaseHelper;
 import squarelist.rohan.com.database.ItemContract;
 import squarelist.rohan.com.squarelist.rohan.com.drag.ItemAdapter;
+import squarelist.rohan.com.squarelist.rohan.com.drag.ItemClickListener;
+import squarelist.rohan.com.squarelist.rohan.com.drag.ItemDeleteListener;
 import squarelist.rohan.com.squarelist.rohan.com.drag.ItemDragListener;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, ItemActionListener {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, ItemActionListener, DialogActionListener {
 
     private GridView gvChecked;
     private GridView gvUnchecked;
@@ -55,7 +58,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         gvChecked.setOnDragListener(new ItemDragListener(this));
         gvUnchecked.setOnDragListener(new ItemDragListener(this));
 
+        gvChecked.setOnItemClickListener(new ItemClickListener(this));
+        gvUnchecked.setOnItemClickListener(new ItemClickListener(this));
+
         setupFloatingAdd();
+
+        LinearLayout lloDelete = (LinearLayout) findViewById(R.id.MainActivity_lloDelete);
+        lloDelete.setOnDragListener(new ItemDeleteListener(this));
     }
 
     private void setupFloatingAdd(){
@@ -70,6 +79,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 dialog.show(getFragmentManager(), "ItemDialog");
             }
         });
+    }
+
+    @Override
+    public void showEditDialog(long itemId) {
+        ItemDialog dialog = new ItemDialog();
+        Bundle b = new Bundle();
+        b.putLong(ItemContract.ItemEntry._ID, itemId);
+        dialog.setArguments(b);
+        dialog.show(getFragmentManager(), "ItemDialog");
     }
 
     private void loadItems(){
@@ -140,25 +158,64 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public int deleteItem(long itemId) {
-        Uri uri = Uri.parse(DataProvider.CONTENT + DataProvider.AUTHORITY + DataProvider.SEPARATOR + ItemContract.ItemEntry.ITEM_TABLE + DataProvider.SEPARATOR + Long.toString(itemId));
-        int returnNumber = getContentResolver().delete(uri, ItemContract.ItemEntry._ID + " = ?", new String[]{Long.toString(itemId)});
+    public int showDeleteDialog(long itemId) {
+        final long fitemId = itemId;
+        final int returnNumber = -5;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_confirm_msg);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteItem(fitemId);
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog dlg = builder.create();
+        dlg.show();
         return returnNumber;
     }
 
+    private void deleteItem(long itemId){
+        Uri uri = Uri.parse(DataProvider.CONTENT + DataProvider.AUTHORITY + DataProvider.SEPARATOR + ItemContract.ItemEntry.ITEM_TABLE + DataProvider.SEPARATOR + Long.toString(itemId));
+        int returnNumber = getContentResolver().delete(uri, ItemContract.ItemEntry._ID + " = ?", new String[]{Long.toString(itemId)});
+        if (returnNumber > 0){
+            reloadItems();
+        }
+    }
+
     @Override
-    public int addItem() {
-        return 0;
+    public int addItem(String itemName, int itemStatus) {
+        ContentValues values = new ContentValues();
+        values.put(ItemContract.ItemEntry.ITEM_NAME, itemName);
+        values.put(ItemContract.ItemEntry.ITEM_STATUS, itemStatus);
+        Uri uri = Uri.parse(DataProvider.CONTENT + DataProvider.AUTHORITY + DataProvider.SEPARATOR + ItemContract.ItemEntry.ITEM_TABLE);
+        Uri addUri = getContentResolver().insert(uri, values);
+        Log.i(TAG, "addUri: " + addUri);
+        int addNumber = Integer.parseInt(addUri.getLastPathSegment());
+        Log.i(TAG, "addNumber: " + addNumber);
+        return addNumber;
     }
 
-    private void addTestItems(){
-        DatabaseHelper.getInstance(getBaseContext()).addItem(getBaseContext(), "Item #1", 0);
-        DatabaseHelper.getInstance(getBaseContext()).addItem(getBaseContext(), "Item #2", 0);
-
-        DatabaseHelper.getInstance(getBaseContext()).addItem(getBaseContext(), "Item #3", 1);
-        DatabaseHelper.getInstance(getBaseContext()).addItem(getBaseContext(), "Item #4", 1);
+    @Override
+    public void onOKSelected(Bundle b) {
+        long itemId = b.getLong(ItemContract.ItemEntry._ID);
+        if (itemId != -5){
+            updateItem(itemId, b.getInt(ItemContract.ItemEntry.ITEM_STATUS), b.getString(ItemContract.ItemEntry.ITEM_NAME));
+        } else {
+            addItem(b.getString(ItemContract.ItemEntry.ITEM_NAME), b.getInt(ItemContract.ItemEntry.ITEM_STATUS));
+        }
+        reloadItems();
     }
 
+    @Override
+    public void onCancelSelected() {
+
+    }
 
     private void initializeCheckedItems(){
         mCheckedAdapter = new ItemAdapter(getBaseContext(), null, R.layout.item_lo, new String[]{ItemContract.ItemEntry.ITEM_NAME, ItemContract.ItemEntry.ITEM_STATUS},

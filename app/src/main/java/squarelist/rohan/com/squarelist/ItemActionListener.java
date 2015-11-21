@@ -6,6 +6,7 @@ package squarelist.rohan.com.squarelist;
 public interface ItemActionListener {
     public int updateItem(long itemId, int status, String itemName);
     public int updateItemStatus(long itemId, int status);
-    public int deleteItem(long itemId);
-    public int addItem();
+    public void showEditDialog(long itemId);
+    public int showDeleteDialog(long itemId);
+    public int addItem(String itemName, int itemStatus);
 }

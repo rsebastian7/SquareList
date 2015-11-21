@@ -5,4 +5,5 @@
     <string name="item_status">Item Status</string>
     <string name="item_checked">Checked</string>
     <string name="item_unchecked">Unchecked</string>
+    <string name="delete_confirm_msg">Are you sure you want to delete this item?</string>
 </resources>

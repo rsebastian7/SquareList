@@ -14,15 +14,11 @@ public class ItemTouchListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-
         ClipData.Item itemContent = new ClipData.Item(v.getTag().toString());
         ClipData clip = new ClipData(v.getTag().toString(), new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN}, itemContent);
         ItemDragShadow shadow = new ItemDragShadow(v);
         v.startDrag(clip, shadow, v, 0);
-
         return false;
     }
-
-
 
 }
