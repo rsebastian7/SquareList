@@ -26,7 +26,7 @@ import squarelist.rohan.com.squarelist.rohan.com.drag.ItemClickListener;
 import squarelist.rohan.com.squarelist.rohan.com.drag.ItemDeleteListener;
 import squarelist.rohan.com.squarelist.rohan.com.drag.ItemDragListener;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, ItemActionListener, DialogActionListener {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, ItemActionListener, DialogActionListenr {
 
     private GridView gvChecked;
     private GridView gvUnchecked;
@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void initializeCheckedItems(){
-        mCheckedAdapter = new ItemAdapter(getBaseContext(), null, R.layout.item_lo, new String[]{ItemContract.ItemEntry.ITEM_NAME, ItemContract.ItemEntry.ITEM_STATUS},
+        mCheckedAdapter = new ItemAdapter(getBaseContext(), null, R.layout.item_lo_checked, new String[]{ItemContract.ItemEntry.ITEM_NAME, ItemContract.ItemEntry.ITEM_STATUS},
                 new int[]{R.id.item_lo_tvName, R.id.item_lo_tvStatus});
         gvChecked.setAdapter(mCheckedAdapter);
     }
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void initializeUncheckedItems(){
-        mUncheckedAdapter = new ItemAdapter(getBaseContext(), null, R.layout.item_lo, new String[]{ItemContract.ItemEntry.ITEM_NAME, ItemContract.ItemEntry.ITEM_STATUS},
+        mUncheckedAdapter = new ItemAdapter(getBaseContext(), null, R.layout.item_lo_unchecked, new String[]{ItemContract.ItemEntry.ITEM_NAME, ItemContract.ItemEntry.ITEM_STATUS},
                 new int[]{R.id.item_lo_tvName, R.id.item_lo_tvStatus});
         gvUnchecked.setAdapter(mUncheckedAdapter);
     }

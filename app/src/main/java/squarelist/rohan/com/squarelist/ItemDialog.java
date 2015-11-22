@@ -28,7 +28,7 @@ public class ItemDialog extends DialogFragment {
     private RadioButton mRdBtnChecked;
     private RadioButton mRdBtnUnchecked;
 
-    private DialogActionListener mListener;
+    private DialogActionListenr mListener;
 
     private static final String TAG = ItemDialog.class.getSimpleName();
 
@@ -108,9 +108,9 @@ public class ItemDialog extends DialogFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (DialogActionListener) activity;
+            mListener = (DialogActionListenr) activity;
         } catch (ClassCastException e){
-            throw new ClassCastException(activity.toString() + " did not implement DialogActionListener.");
+            throw new ClassCastException(activity.toString() + " did not implement DialogActionListenr.");
         }
     }
 

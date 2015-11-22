@@ -1,6 +1,8 @@
 package squarelist.rohan.com.squarelist.rohan.com.drag;
 
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.GridView;
